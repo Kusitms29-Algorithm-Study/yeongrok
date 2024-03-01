@@ -1,75 +1,52 @@
 #include <iostream>
-#include <string>
-#include <sstream>
-#include <cstring>
-//https://www.acmicpc.net/problem/18258
+#include <stack>
+
+//https://www.acmicpc.net/problem/1935
 using namespace std;
 
-bool isEmpty(int f, int r) {
-    if(f == r){
-        return true;
-    }
-    return false;
-}
 
 int main() {
     ios::sync_with_stdio(false); cin.tie(nullptr);
 
-    int num;
-    cin >> num;
+    int n;
+    cin >> n;
+    int* value = new int[n+1];
+    string model;
+    cin >> model;
 
-    int* queue = new int[num + 1];
-    int f = 0;
-    int r = 0;
+    stack<double> stack;
 
-    for(int i=0; i<num; i++){
-        string command;
-        cin >> command;
-
-        if(command == "push"){
-            int v = 0;
-            cin >> v;
-            queue[f] = v;
-            f++;
-            if(f >= num){
-                f = 0;
-            }
-        }
-        else if(command == "front"){
-            if(isEmpty(f, r)){
-                cout << -1 << "\n";
-                continue;
-            }
-            cout << queue[r] << "\n";
-        }
-        else if(command == "back"){
-            if(isEmpty(f, r)){
-                cout << -1 << "\n";
-                continue;
-            }
-            cout << queue[f-1] << "\n";
-        }
-        else if(command =="size"){
-            cout << abs(f-r) << "\n";
-        }
-        else if(command == "empty") {
-            if (isEmpty(f, r)) {
-                cout << 1 << "\n";
-                continue;
-            }
-
-            cout << 0 << "\n";
-        }
-        else if(command == "pop"){
-            if(isEmpty(f, r)){
-                cout << -1 << "\n";
-                continue;
-            }
-            cout << queue[r] << "\n";
-            r++;
-        }
-
+    for(int i=0; i<n; i++){
+        cin >> value[i];
     }
+
+    for(char i : model){
+        if(i >= 'A' && i <= 'Z'){
+            stack.push(value[i - 'A']);
+        }
+        else{
+            double num1 = stack.top();
+            stack.pop();
+            double num2 = stack.top();
+            stack.pop();
+            if(i == '*'){
+                stack.push(num2 * num1);
+            }
+            else if(i == '/'){
+                stack.push(num2 / num1);
+            }
+            else if(i == '-'){
+                stack.push(num2 - num1);
+            }
+            else if(i == '+'){
+                stack.push(num2 + num1);
+            }
+        }
+    }
+    //소수점 둘째 자리 출력
+    cout << fixed;
+    cout.precision(2);
+    cout << stack.top() << endl;
 
 }
 
